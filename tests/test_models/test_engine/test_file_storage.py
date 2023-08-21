@@ -1,9 +1,14 @@
 #!/usr/bin/python3
 """ Module for testing file storage"""
 import unittest
+from os import environ
 from models.base_model import BaseModel
+from models.state import State
 from models import storage
 import os
+
+
+storage_type = environ.get('HBNB_TYPE_STORAGE', 'file')
 
 
 class test_fileStorage(unittest.TestCase):
@@ -21,7 +26,7 @@ class test_fileStorage(unittest.TestCase):
         """ Remove storage file at end of tests """
         try:
             os.remove('file.json')
-        except:
+        except FileNotFoundError:
             pass
 
     def test_obj_list_empty(self):
@@ -107,3 +112,13 @@ class test_fileStorage(unittest.TestCase):
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+    @unittest.skipIf(storage_type == 'db', 'for file storage only')
+    def test_delete_all(self):
+        new_state = State()
+        new_state.name = 'California'
+        new_state.save()
+        self.assertIn(new_state, storage.all(State).values())
+
+        storage.delete(new_state)
+        self.assertNotIn(new_state, storage.all(State).values())
