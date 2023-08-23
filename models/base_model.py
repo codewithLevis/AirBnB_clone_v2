@@ -4,9 +4,10 @@ import uuid
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, DateTime
-
+from os import environ
 
 Base = declarative_base()
+storage_form = environ.get('HBNB_STORAGE_TYPE', 'file')
 
 
 class BaseModel:
@@ -24,14 +25,23 @@ class BaseModel:
         else:
             for key, value in kwargs.items():
                 if key == 'created_at' or key == 'updated_at':
-                    setattr(self, key, datetime.strptime(datetime.utcnow(),
+                    setattr(self, key, datetime.strptime(value,
                             '%Y-%m-%dT%H:%M:%S.%f'))
+                elif key == '__class__':
+                    pass
                 else:
-                    self.__setattr__(key, value)
+                    if hasattr(self, key):
+                        self.__setattr__(key, value)
+                    else:
+                        pass
 
             if not self.id:
                 self.id = str(uuid.uuid4())
-
+            if storage_form == 'file':
+                if not self.created_at:
+                    setattr(self, 'created_at', datetime.now())
+                if not self.updated_at:
+                    setattr(self, 'updated_at', datetime.now())
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]

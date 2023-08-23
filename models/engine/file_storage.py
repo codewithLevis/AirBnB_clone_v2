@@ -15,10 +15,11 @@ class FileStorage:
         if cls:
             for key, value in FileStorage.__objects.items():
                 if isinstance(value, cls):
-                    dic.update({key: value})
-            return dic
+                    dic.update({key: value.to_dict()})
         else:
-            return self.__objects
+            for key, value in self.__objects.items():
+                dic.update({key: value.to_dict()})
+        return dic
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -53,7 +54,7 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
+                    self.__objects[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
