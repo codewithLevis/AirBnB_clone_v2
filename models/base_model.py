@@ -42,6 +42,7 @@ class BaseModel:
                     setattr(self, 'created_at', datetime.now())
                 if not self.updated_at:
                     setattr(self, 'updated_at', datetime.now())
+
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
