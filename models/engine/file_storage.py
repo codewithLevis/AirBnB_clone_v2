@@ -15,10 +15,10 @@ class FileStorage:
         if cls:
             for key, value in FileStorage.__objects.items():
                 if isinstance(value, cls):
-                    dic.update({key: value.to_dict()})
+                    dic.update({key: value})
         else:
             for key, value in self.__objects.items():
-                dic.update({key: value.to_dict()})
+                dic.update({key: value})
         return dic
 
     def new(self, obj):

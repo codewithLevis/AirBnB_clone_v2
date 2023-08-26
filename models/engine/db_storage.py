@@ -40,13 +40,13 @@ class DBStorage:
             objects_list = self.__session.query(cls).all()
             for obj in objects_list:
                 key = f'{cls.__name__}.{obj.id}'
-                dictionary.update({key: obj.to_dict()})
+                dictionary.update({key: obj})
         else:
             for cls in classes:
                 objects_list = self.__session.query(cls).all()
                 for obj in objects_list:
                     key = f'{cls.__name__}.{obj.id}'
-                    dictionary.update({key: obj.to_dict()})
+                    dictionary.update({key: obj})
 
         return dictionary
 
