@@ -17,13 +17,16 @@ class State(BaseModel, Base):
         cities = orm.relationship('City',
                                   cascade='all, delete-orphan',
                                   backref='state')
-    else:
-        from models import storage
+    else:   
         name = ""
 
         @property
         def cities(self):
+            """
+            Retrive cities related to a state
+            """
+            from models import storage
             storage.reload()
             cities_dict = storage.all(City)
-            cities = cities.values()
-            return [city for city in cities if city['state_id'] == self.id]
+            cities = cities_dict.values()
+            return [city for city in cities if city.state_id == self.id]
